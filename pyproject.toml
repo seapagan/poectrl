@@ -1,0 +1,21 @@
+[tool.poetry]
+name = "ts-8-pro-control"
+version = "0.1.0"
+description = "Control PoE status on a Ubiquiti TS-8-Pro Switch"
+authors = ["Grant Ramsay <seapagan@gmail.com>"]
+license = "MIT"
+readme = "README.md"
+packages = [{include = "ts_8_pro_control"}]
+
+[tool.poetry.dependencies]
+python = "^3.7"
+paramiko = "^2.12.0"
+
+
+[tool.poetry.group.dev.dependencies]
+flake8 = "^5.0.4"
+black = "^22.10.0"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
