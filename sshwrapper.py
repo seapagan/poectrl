@@ -1,4 +1,6 @@
 """Custom class to encapsulate SSH access to devices."""
+from typing import Tuple
+
 import paramiko
 
 
@@ -9,7 +11,7 @@ class Wrapper:
     results or errors.
     """
 
-    def __init__(self, host, username, password, port):
+    def __init__(self, host: str, username: str, password: str, port: int):
         """Initialize the Class."""
         self.host = host
         self.username = username
@@ -27,36 +29,26 @@ class Wrapper:
         should be closed by calling the close() method once the required
         commands have been run
         """
-        try:
-            # ignore missing keys with no warning
-            self.client.set_missing_host_key_policy(
-                paramiko.MissingHostKeyPolicy()
-            )
-            # open a connection to the specified host
-            self.client.connect(
-                self.host,
-                self.port,
-                self.username,
-                self.password,
-                look_for_keys=False,
-                allow_agent=False,
-                timeout=10,
-                banner_timeout=10,
-                auth_timeout=10,
-            )
-        except Exception as e:
-            print(f"*** Caught Connect exception: {e.__class__}: {e}")
-            try:
-                self.client.close()
-            except AttributeError:
-                pass
-            return
+        # ignore missing keys with no warning
+        self.client.set_missing_host_key_policy(paramiko.MissingHostKeyPolicy())
+        # open a connection to the specified host
+        self.client.connect(
+            self.host,
+            self.port,
+            self.username,
+            self.password,
+            look_for_keys=False,
+            allow_agent=False,
+            timeout=10,
+            banner_timeout=10,
+            auth_timeout=10,
+        )
 
     def close(self):
         """Close the SSH connection to this host."""
         self.client.close()
 
-    def run(self, cmd_str):
+    def run(self, cmd_str) -> Tuple[str, str]:
         """Run a command on this host over the existing SSH connection.
 
         Args:
@@ -66,17 +58,11 @@ class Wrapper:
             output [string]: The output from the command
             stderr [string]: Any errors from the remote stderr
         """
-        try:
-            stdin, stdout, stderr = self.client.exec_command(
-                cmd_str, timeout=10
-            )
 
-            # convert the streams we want into strings.
-            err = stderr.read().decode("utf8").strip("\n")
-            out = stdout.read().decode("utf8").strip("\n")
-            # return the stdout and stderr as a tuple
-            return out, err
-        except Exception as e:
-            print(f"*** Caught Connect exception: {e.__class__}: {e}")
-            self.client.close()
-            return
+        _, stdout, stderr = self.client.exec_command(cmd_str, timeout=10)
+
+        # convert the streams we want into strings.
+        err = stderr.read().decode("utf8").strip("\n")
+        out = stdout.read().decode("utf8").strip("\n")
+        # return the stdout and stderr as a tuple
+        return out, err
