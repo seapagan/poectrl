@@ -13,10 +13,13 @@ when not needed or quick enabling if required.
 
 Current proposed project plan.
 
-- [ ] Write proof-of-concept code to control ports.
-- [ ] Develop this into a full API (using FastAPI)
-- [ ] Create a command line app to interface with the above API
-- [ ] Create a Web App to interface with the above API
+- [x] Write proof-of-concept code to control ports.
+- [ ] Rerfactor and tidy the above code into a Library Class.
+- [ ] Create a CLI app to apply profiles from config file, show current values,
+  list profiles etc.
+- [ ] Develop this into a full API (using FastAPI).
+- [ ] Modify the command line app to interface with the above API.
+- [ ] Create a Web App to interface with the above API.
 
 ## Contributing
 
