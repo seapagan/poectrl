@@ -91,9 +91,7 @@ def process_device(ip: str, port_config: dict):
         system_cfg = get_system_file(connection)
         new_cfg = process_system_cfg(system_cfg, port_config)
         put_system_file(connection, new_cfg)
-        _, stderr = connection.run("cfgmtd -w -p /etc/")
-        if stderr:
-            print(f"Error Saving - {stderr}")
+        connection.run("cfgmtd -w -p /etc/")
     except NoValidConnectionsError:
         print("Cannot connect to this device!")
         quit(1)  # error code 1 "Cant Connect"
@@ -114,4 +112,4 @@ def activate_profile(profile: str):
             process_device(device, this_profile[device])
 
 
-activate_profile("camera_on")
+activate_profile("camera_off")
