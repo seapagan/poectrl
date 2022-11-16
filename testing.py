@@ -5,13 +5,10 @@ from paramiko.ssh_exception import (
 
 from sshwrapper import Wrapper as SSH
 
-# from json.decoder import JSONDecodeError
-
-
 PROFILES = {
     "profiles": {
         "camera_on": {
-            "192.168.0.187": {4: 24, 5: 24, 8: 24},
+            "192.168.0.187": {4: 24, 5: 24, 8: 48},
         },
         "camera_off": {
             "192.168.0.187": {4: 0, 5: 0, 8: 0},
@@ -94,7 +91,7 @@ def process_device(ip: str, port_config: dict):
         system_cfg = get_system_file(connection)
         new_cfg = process_system_cfg(system_cfg, port_config)
         put_system_file(connection, new_cfg)
-        _, stderr = connection.run("save")
+        _, stderr = connection.run("cfgmtd -w -p /etc/")
         if stderr:
             print(f"Error Saving - {stderr}")
     except NoValidConnectionsError:
@@ -118,18 +115,3 @@ def activate_profile(profile: str):
 
 
 activate_profile("camera_on")
-
-
-# version, stderr = connection.run("cat /etc/version")
-
-
-# try:
-#     raw_status, stderr = connection.run("mca-status")
-
-#     status = json.loads(raw_status)["status"]
-
-#     host = status["host"]
-#     ports: dict = status["ports"]
-# except JSONDecodeError:
-#     print("Error decoding status, cannot continue.")
-#     quit(4)  # Error code 4 "Can't decode status"
