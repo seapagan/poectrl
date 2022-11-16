@@ -6,8 +6,8 @@ profiles.
 
 ## Use Cases
 
-- Control a set of IP cameras, switches and access points to enable disabling
-when not needed or quick enabling if required.
+- Control a set of PoE-powered IP cameras, switches and access points to allow
+disabling when not needed or quick enabling if required.
 
 ## Development Plans
 
@@ -26,4 +26,4 @@ Current proposed project plan.
 At this time, the project is barely in it's planning stage but I do have a firm
 idea where it's going and how to structure it. As such, other contributions are
 not looked for at this time. Hopefully, within a few days this project will be
-in a much more advance stage and that will change 😃.
+at a much more advanced stage and that will change 😃.
