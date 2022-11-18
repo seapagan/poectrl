@@ -7,12 +7,11 @@ from poectrl.errors import (
     CannotWriteSettingsError,
 )
 
-DEVICES = {
-    "192.168.0.187": {"user": "ubnt", "password": "ubnt"},
-    "192.168.0.190": {"user": "ubnt", "password": "ubnt"},
-}
-
 PROFILES = {
+    "devices": {
+        "192.168.0.187": {"user": "ubnt", "password": "ubnt"},
+        "192.168.0.190": {"user": "ubnt", "password": "ubnt2"},
+    },
     "profiles": {
         "camera_on": {
             "192.168.0.187": {4: 24, 5: 24, 8: 48},
@@ -33,18 +32,22 @@ def activate_profile(profile: str):
     else:
         this_profile = dict(PROFILES["profiles"][profile])
         for device in this_profile:
-            auth = DEVICES[device]
-            poe = PoECtrl(device, auth["user"], auth["password"])
             try:
-                poe.process_device(this_profile[device])
-            except BadAuthenticationError:
-                print(" -> Cannot connect to this device [Bad user/pass].")
-            except CannotConnectError:
-                print(" -> Cannot physically connect to this device.")
-            except (CannotReadSettingsError, CannotWriteSettingsError):
-                print(
-                    " -> Failure to Read or Write the Settings data to device."
-                )
+                auth = PROFILES["devices"][device]
+                poe = PoECtrl(device, auth["user"], auth["password"])
+                try:
+                    poe.process_device(this_profile[device])
+                except BadAuthenticationError:
+                    print(" -> Cannot connect to this device [Bad user/pass].")
+                except CannotConnectError:
+                    print(" -> Cannot physically connect to this device.")
+                except (CannotReadSettingsError, CannotWriteSettingsError):
+                    print(
+                        " -> Failure to Read or Write the Settings for device"
+                        f"{device}"
+                    )
+            except KeyError as e:
+                print(f" -> Device {e} has not been defined, skipping.")
 
 
 activate_profile("camera_off")
