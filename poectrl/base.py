@@ -38,11 +38,16 @@ class PoECtrl:
         self.port = port
 
         self.connection = SSH(self.ip, self.username, self.password, self.port)
+        self.system_cfg = ""
 
     def connect(self):
-        """Open the SSH connection, or fail if errors."""
+        """Open the SSH connection, or raise relavant Error.
+
+        At this time we also get the settings into an instance variable.
+        """
         try:
             self.connection.connect()
+            self.system_cfg = self.get_system_cfg()
         except NoValidConnectionsError:
             raise CannotConnectError
         except AuthenticationException:
@@ -126,8 +131,7 @@ class PoECtrl:
                     f"poe {port} {port_config[port]}"
                 )
 
-            system_cfg = self.get_system_cfg()
-            new_cfg = self.update_system_cfg(system_cfg, port_config)
+            new_cfg = self.update_system_cfg(self.system_cfg, port_config)
             self.put_system_file(new_cfg)
             self.connection.run("cfgmtd -w -p /etc/")
         finally:
