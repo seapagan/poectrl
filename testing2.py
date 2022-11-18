@@ -41,4 +41,4 @@ def activate_profile(profile: str):
                 )
 
 
-activate_profile("camera_on")
+activate_profile("camera_off")
