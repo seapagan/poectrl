@@ -30,8 +30,8 @@ def activate_profile(profile: str):
                 auth = PROFILES["devices"][device]
                 poe = PoECtrl(device, auth["user"], auth["password"])
                 poe.process_device(this_profile[device])
-            except KeyError as e:
-                print(f" -> Device {e} has not been defined, skipping.")
+            except KeyError as err:
+                print(f" -> Device {err} has not been defined, skipping.")
 
 
 activate_profile("camera_off")

@@ -58,7 +58,6 @@ class Wrapper:
             output [string]: The output from the command
             stderr [string]: Any errors from the remote stderr
         """
-
         _, stdout, stderr = self.client.exec_command(cmd_str, timeout=10)
 
         # convert the streams we want into strings.
