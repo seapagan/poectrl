@@ -30,7 +30,7 @@ from .errors import (
 class PoECtrl:
     """Class to control PoE on Ubiquiti Routers."""
 
-    def __init__(self, ip: str, username: str, password: str, port: int):
+    def __init__(self, ip: str, username: str, password: str, port: int = 22):
         """Initialize the class."""
         self.ip = ip
         self.username = username
