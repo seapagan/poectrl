@@ -7,6 +7,11 @@ from poectrl.errors import (
     CannotWriteSettingsError,
 )
 
+DEVICES = {
+    "192.168.0.187": {"user": "ubnt", "password": "ubnt"},
+    "192.168.0.190": {"user": "ubnt", "password": "ubnt"},
+}
+
 PROFILES = {
     "profiles": {
         "camera_on": {
@@ -28,7 +33,8 @@ def activate_profile(profile: str):
     else:
         this_profile = dict(PROFILES["profiles"][profile])
         for device in this_profile:
-            poe = PoECtrl(device, "ubnt", "ubnt", 22)
+            auth = DEVICES[device]
+            poe = PoECtrl(device, auth["user"], auth["password"])
             try:
                 poe.process_device(this_profile[device])
             except BadAuthenticationError:
