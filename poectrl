@@ -1,7 +1,6 @@
 #! /bin/env python
-"""Test the PoECtrl library."""
+"""Control PoE on supported routers."""
 import json
-from typing import Optional
 
 import typer
 from rich import print
