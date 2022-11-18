@@ -1,5 +1,9 @@
+#! /bin/env python
 """Test the PoECtrl library."""
-from poectrl import PoECtrl
+import typer
+from rich import print
+
+from poelib import PoECtrl
 
 PROFILES = {
     "devices": {
@@ -22,7 +26,7 @@ PROFILES = {
 def activate_profile(profile: str):
     """Activate the specified profile."""
     if profile not in list(PROFILES["profiles"]):
-        print(f"The profile '{profile}' does not exist, aborting!")
+        print(f" [red]The profile '{profile}' does not exist, aborting!")
     else:
         this_profile = dict(PROFILES["profiles"][profile])
         for device in this_profile:
@@ -34,4 +38,10 @@ def activate_profile(profile: str):
                 print(f" -> Device {err} has not been defined, skipping.")
 
 
-activate_profile("camera_off")
+def main(profile: str):
+    """Run the provided profile."""
+    activate_profile(profile)
+
+
+if __name__ == "__main__":
+    typer.run(main)
