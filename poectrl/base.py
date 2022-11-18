@@ -47,7 +47,7 @@ class PoECtrl:
         """
         try:
             self.connection.connect()
-            self.system_cfg = self.get_system_cfg()
+            self.system_cfg = self.read_system_cfg()
         except NoValidConnectionsError:
             raise CannotConnectError
         except AuthenticationException:
@@ -57,7 +57,7 @@ class PoECtrl:
         """Close the SSH connection."""
         self.connection.close()
 
-    def get_system_cfg(self) -> str:
+    def read_system_cfg(self) -> str:
         """Return the 'tmp/system.cfg' as a str.
 
         Raise CannotReadSettingsError if this fails.
@@ -67,7 +67,7 @@ class PoECtrl:
             raise CannotReadSettingsError
         return system
 
-    def put_system_file(self, new_system):
+    def write_system_cfg(self, new_system):
         """Write the provided system file back to the device.
 
         Raise CannotWriteSettingsError if this fails.
@@ -93,31 +93,39 @@ class PoECtrl:
         # remove the common prefix to clean up next code
         prefix_removed = [x[len(prefix) :] for x in port_data]
 
-        # convert to a dict for better editing
-        system_dict = {}
-        for entry in prefix_removed:
-            port_number, data = entry.split(".", 1)
-            key, value = data.split("=")
-            if port_number in system_dict:
-                system_dict[port_number].update({key: value})
-            else:
-                system_dict[port_number] = {key: value}
+        system_dict = self.settings_list_to_dict(prefix_removed)
 
-        # update the PoE entries
+        # update the PoE entries in settings. This allows the GUI to update, and
+        # the settings to persist over a reboot (after running save!)
         for port in port_config:
             system_dict[str(port)]["poe"] = port_config[port]  # type: ignore
 
-        # convert back to list of strings
+        system_string_list = self.dict_to_settings_list(system_dict)
+        new_system_cfg = "\n".join(sorted(main_body + system_string_list))
+
+        return new_system_cfg
+
+    def dict_to_settings_list(self, system_dict: dict) -> list:
+        """Convert the settings dict into a list of strings."""
         system_string_list = []
         for port, values in system_dict.items():
             for value in values.items():
                 key, value = value
                 entry = f"switch.port.{port}.{key}={value}"
                 system_string_list.append(entry)
+        return system_string_list
 
-        new_system_cfg = "\n".join(sorted(main_body + system_string_list))
-
-        return new_system_cfg
+    def settings_list_to_dict(self, settings_list: list) -> dict:
+        """Convert list of settings to a dictionary."""
+        system_dict = {}
+        for entry in settings_list:
+            port_number, data = entry.split(".", 1)
+            key, value = data.split("=")
+            if port_number in system_dict:
+                system_dict[port_number].update({key: value})
+            else:
+                system_dict[port_number] = {key: value}
+        return system_dict
 
     def process_device(self, port_config: dict):
         """Set the ports for a specific device."""
@@ -132,7 +140,11 @@ class PoECtrl:
                 )
 
             new_cfg = self.update_system_cfg(self.system_cfg, port_config)
-            self.put_system_file(new_cfg)
+            self.write_system_cfg(new_cfg)
+
+            # save the new settings on the device. The command below is what is
+            # actually run when using the alias 'save' from the device command
+            # line.
             self.connection.run("cfgmtd -w -p /etc/")
         finally:
             self.close()
