@@ -17,15 +17,9 @@ from paramiko.ssh_exception import (
     NoValidConnectionsError,
 )
 
-from sshwrapper import Wrapper as SSH  # noqa N814
+from poectrl.sshwrapper import Wrapper as SSH  # noqa N814
 
-
-class CannotConnectError(Exception):
-    """Raised when we cannot connect to a device."""
-
-
-class BadAuthenticationError(Exception):
-    """Raised if the user/pass is incorrect."""
+from .errors import BadAuthenticationError, CannotConnectError
 
 
 class PoECtrl:

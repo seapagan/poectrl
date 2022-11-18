@@ -1,5 +1,6 @@
 """Test the PoECtrl library."""
-from poectrl import BadAuthenticationError, CannotConnectError, PoECtrl
+from poectrl import PoECtrl
+from poectrl.errors import BadAuthenticationError, CannotConnectError
 
 PROFILES = {
     "profiles": {
