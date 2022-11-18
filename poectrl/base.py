@@ -146,5 +146,13 @@ class PoECtrl:
             # actually run when using the alias 'save' from the device command
             # line.
             self.connection.run("cfgmtd -w -p /etc/")
+        except BadAuthenticationError:
+            print(" -> Cannot connect to this device [Bad user/pass].")
+        except CannotConnectError:
+            print(" -> Cannot physically connect to this device.")
+        except (CannotReadSettingsError, CannotWriteSettingsError):
+            print(
+                " -> Failure to Read or Write the Settings for device {self.ip}"
+            )
         finally:
             self.close()

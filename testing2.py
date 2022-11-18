@@ -1,16 +1,10 @@
 """Test the PoECtrl library."""
 from poectrl import PoECtrl
-from poectrl.errors import (
-    BadAuthenticationError,
-    CannotConnectError,
-    CannotReadSettingsError,
-    CannotWriteSettingsError,
-)
 
 PROFILES = {
     "devices": {
         "192.168.0.187": {"user": "ubnt", "password": "ubnt"},
-        "192.168.0.190": {"user": "ubnt", "password": "ubnt2"},
+        "192.168.0.190": {"user": "ubnt", "password": "ubnt"},
     },
     "profiles": {
         "camera_on": {
@@ -28,24 +22,14 @@ PROFILES = {
 def activate_profile(profile: str):
     """Activate the specified profile."""
     if profile not in list(PROFILES["profiles"]):
-        print(f"The profile '{profile}' does not exist!")
+        print(f"The profile '{profile}' does not exist, aborting!")
     else:
         this_profile = dict(PROFILES["profiles"][profile])
         for device in this_profile:
             try:
                 auth = PROFILES["devices"][device]
                 poe = PoECtrl(device, auth["user"], auth["password"])
-                try:
-                    poe.process_device(this_profile[device])
-                except BadAuthenticationError:
-                    print(" -> Cannot connect to this device [Bad user/pass].")
-                except CannotConnectError:
-                    print(" -> Cannot physically connect to this device.")
-                except (CannotReadSettingsError, CannotWriteSettingsError):
-                    print(
-                        " -> Failure to Read or Write the Settings for device"
-                        f"{device}"
-                    )
+                poe.process_device(this_profile[device])
             except KeyError as e:
                 print(f" -> Device {e} has not been defined, skipping.")
 
