@@ -1,5 +1,8 @@
 #! /bin/env python
 """Test the PoECtrl library."""
+import json
+from typing import Optional
+
 import typer
 from rich import print
 
@@ -26,7 +29,11 @@ PROFILES = {
 def activate_profile(profile: str):
     """Activate the specified profile."""
     if profile not in list(PROFILES["profiles"]):
-        print(f" [red]The profile '{profile}' does not exist, aborting!")
+        print(
+            f" [red]The profile '[bold]{profile}[/bold]' does not exist"
+            ", aborting!"
+        )
+        raise typer.Exit(1)
     else:
         this_profile = dict(PROFILES["profiles"][profile])
         for device in this_profile:
@@ -35,12 +42,19 @@ def activate_profile(profile: str):
                 poe = PoECtrl(device, auth["user"], auth["password"])
                 poe.process_device(this_profile[device])
             except KeyError as err:
-                print(f" -> Device {err} has not been defined, skipping.")
+                print(f"[red] -> Device {err} has not been defined, skipping.")
 
 
-def main(profile: str):
-    """Run the provided profile."""
-    activate_profile(profile)
+def main(profile: str, info: bool = False):
+    """Run the provided profile.
+
+    Turn PoE ports on/off depending on the settings in the Profile.
+    """
+    if info:
+        # this is just a temp placeholder, I'll write a prettier one later.
+        print(json.dumps(PROFILES["profiles"][profile], indent=4))
+    else:
+        activate_profile(profile)
 
 
 if __name__ == "__main__":
