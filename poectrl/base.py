@@ -19,7 +19,12 @@ from paramiko.ssh_exception import (
 
 from poectrl.sshwrapper import Wrapper as SSH  # noqa N814
 
-from .errors import BadAuthenticationError, CannotConnectError
+from .errors import (
+    BadAuthenticationError,
+    CannotConnectError,
+    CannotReadSettingsError,
+    CannotWriteSettingsError,
+)
 
 
 class PoECtrl:
@@ -47,23 +52,26 @@ class PoECtrl:
         """Close the SSH connection."""
         self.connection.close()
 
-    def get_system_file(self) -> str:
-        """Return the 'tmp/system.cfg' as an str."""
+    def get_system_cfg(self) -> str:
+        """Return the 'tmp/system.cfg' as a str.
+
+        Raise CannotReadSettingsError if this fails.
+        """
         system, stderr = self.connection.run("cat /tmp/system.cfg")
         if stderr:
-            print("Error getting configuration data, cannot continue.")
-            quit(3)  # Error code 3 "Can't read config"
+            raise CannotReadSettingsError
         return system
 
     def put_system_file(self, new_system):
-        """write the provided system file back to the device."""
+        """Write the provided system file back to the device.
+
+        Raise CannotWriteSettingsError if this fails.
+        """
         system, stderr = self.connection.run(
             f"echo '{new_system}' > /tmp/system.cfg"
         )
         if stderr:
-            print("Error writing updated configuration data, cannot continue.")
-            print(stderr)
-            quit(4)  # Error code 4 "Can't write config"
+            raise CannotWriteSettingsError
 
     def update_system_cfg(self, system_cfg: str, port_config: dict):
         """Update the PoE status in the system_cfg."""
@@ -118,7 +126,7 @@ class PoECtrl:
                     f"poe {port} {port_config[port]}"
                 )
 
-            system_cfg = self.get_system_file()
+            system_cfg = self.get_system_cfg()
             new_cfg = self.update_system_cfg(system_cfg, port_config)
             self.put_system_file(new_cfg)
             self.connection.run("cfgmtd -w -p /etc/")

@@ -1,6 +1,11 @@
 """Test the PoECtrl library."""
 from poectrl import PoECtrl
-from poectrl.errors import BadAuthenticationError, CannotConnectError
+from poectrl.errors import (
+    BadAuthenticationError,
+    CannotConnectError,
+    CannotReadSettingsError,
+    CannotWriteSettingsError,
+)
 
 PROFILES = {
     "profiles": {
@@ -30,6 +35,10 @@ def activate_profile(profile: str):
                 print(" -> Cannot connect to this device [Bad user/pass].")
             except CannotConnectError:
                 print(" -> Cannot physically connect to this device.")
+            except (CannotReadSettingsError, CannotWriteSettingsError):
+                print(
+                    " -> Failure to Read or Write the Settings data to device."
+                )
 
 
-activate_profile("camera_off")
+activate_profile("camera_on")
