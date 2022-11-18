@@ -40,6 +40,8 @@ class PoECtrl:
         self.connection = SSH(self.ip, self.username, self.password, self.port)
         self.system_cfg = ""
 
+        self.port_prefix = "switch.port."
+
     def connect(self):
         """Open the SSH connection, or raise relavant Error.
 
@@ -80,26 +82,19 @@ class PoECtrl:
 
     def update_system_cfg(self, system_cfg: str, port_config: dict):
         """Update the PoE status in the system_cfg."""
-        prefix = "switch.port."
-
         main_body = []
         port_data = []
         for line in system_cfg.splitlines():
-            if prefix in line:
+            if self.port_prefix in line:
                 port_data.append(line)
             else:
                 main_body.append(line)
 
-        # remove the common prefix to clean up next code
-        prefix_removed = [x[len(prefix) :] for x in port_data]
-
-        system_dict = self.settings_list_to_dict(prefix_removed)
-
         # update the PoE entries in settings. This allows the GUI to update, and
         # the settings to persist over a reboot (after running save!)
+        system_dict = self.settings_list_to_dict(port_data)
         for port in port_config:
             system_dict[str(port)]["poe"] = port_config[port]  # type: ignore
-
         system_string_list = self.dict_to_settings_list(system_dict)
         new_system_cfg = "\n".join(sorted(main_body + system_string_list))
 
@@ -117,6 +112,8 @@ class PoECtrl:
 
     def settings_list_to_dict(self, settings_list: list) -> dict:
         """Convert list of settings to a dictionary."""
+        settings_list = [x[len(self.port_prefix) :] for x in settings_list]
+
         system_dict = {}
         for entry in settings_list:
             port_number, data = entry.split(".", 1)
@@ -134,7 +131,7 @@ class PoECtrl:
         try:
             self.connect()
             for port in port_config:
-                print(f"  Setting port {port} to {port_config[port]}")
+                print(f"  Setting port {port} to {port_config[port]}V")
                 _, stderr = self.connection.run(
                     f"poe {port} {port_config[port]}"
                 )
