@@ -17,7 +17,7 @@ from paramiko.ssh_exception import (
     NoValidConnectionsError,
 )
 
-from poectrl.sshwrapper import Wrapper as SSH  # noqa N814
+from poelib.sshwrapper import Wrapper as SSH  # noqa N814
 
 from .errors import (
     BadAuthenticationError,

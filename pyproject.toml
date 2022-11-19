@@ -10,6 +10,7 @@ packages = [{ include = "ts_8_pro_control" }]
 [tool.poetry.dependencies]
 python = ">=3.7.2,<4.0"
 paramiko = "^2.12.0"
+typer = {extras = ["all"], version = "^0.7.0"}
 
 
 [tool.poetry.group.dev.dependencies]
