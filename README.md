@@ -61,7 +61,7 @@ simple file that describes all devices and profiles. There is an example in
 
 Run the `poectrl` file, giving the profile name as an argument.
 
-```terminal
+```console
 $ ./poectrl cctv_off
 Using configuration from /home/seapagan/data/work/own/ts-8-pro-control/poectrl.json
 Conncting to 192.168.0.187:
@@ -76,7 +76,7 @@ Conncting to 192.168.0.190:
 
 Listing a profile :
 
-```terminal
+```console
 $ ./poectrl cctv_off --info
 Using configuration from /home/seapagan/data/work/own/ts-8-pro-control/poectrl.json
 {
