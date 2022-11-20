@@ -24,7 +24,6 @@ responsibility is taken for equipment damaged using this library.**
 This project is in no way ready to be used, and documentation is non-existent.
 See the Development Plans below. Until I have a stable useful interface, check
 the source code if you are interested 😃
-Profiles are (currently) hard-coded in, and only of use to myself.
 
 ## Use Cases
 
