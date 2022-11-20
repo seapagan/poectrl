@@ -15,3 +15,15 @@ class CannotReadSettingsError(Exception):
 
 class CannotWriteSettingsError(Exception):
     """Raised if the device settings cannot be written."""
+
+
+class MissingConfigurationError(Exception):
+    """Raised if the configuration file cannot be found."""
+
+
+class BadConfigurationError(Exception):
+    """Raised if the configuration file cannot be decoded."""
+
+
+class UnknownProfileError(Exception):
+    """Raised if the specified profile does not exist."""

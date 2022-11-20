@@ -1,59 +1,54 @@
 #! /bin/env python
-"""Control PoE on supported routers."""
+"""CLI program to Control PoE on supported routers."""
 import json
 
 import typer
 from rich import print
 
 from poelib import PoECtrl
-
-PROFILES = {
-    "devices": {
-        "192.168.0.187": {"user": "ubnt", "password": "ubnt"},
-        "192.168.0.190": {"user": "ubnt", "password": "ubnt"},
-    },
-    "profiles": {
-        "camera_on": {
-            "192.168.0.187": {4: 24, 5: 24, 8: 48},
-            "192.168.0.190": {5: 24, 6: 24, 7: 48},
-        },
-        "camera_off": {
-            "192.168.0.187": {4: 0, 5: 0, 8: 0},
-            "192.168.0.190": {5: 0, 6: 0, 7: 0},
-        },
-    },
-}
+from poelib.errors import (
+    BadConfigurationError,
+    MissingConfigurationError,
+    UnknownProfileError,
+)
+from poelib.profiles import Profile
 
 
-def activate_profile(profile: str):
+def activate_profile(profile: dict, devices: dict):
     """Activate the specified profile."""
-    if profile not in list(PROFILES["profiles"]):
-        print(
-            f" [red]The profile '[bold]{profile}[/bold]' does not exist"
-            ", aborting!"
-        )
-        raise typer.Exit(1)
-    else:
-        this_profile = dict(PROFILES["profiles"][profile])
-        for device in this_profile:
-            try:
-                auth = PROFILES["devices"][device]
-                poe = PoECtrl(device, auth["user"], auth["password"])
-                poe.process_device(this_profile[device])
-            except KeyError as err:
-                print(f"[red] -> Device {err} has not been defined, skipping.")
+    for device in profile:
+        try:
+            auth = devices[device]
+            poe = PoECtrl(device, auth["user"], auth["password"])
+            poe.process_device(profile[device])
+        except KeyError as err:
+            print(f"[red]-> Device {err} has not been defined, skipping.")
 
 
-def main(profile: str, info: bool = False):
+def main(chosen_profile: str, info: bool = False):
     """Run the provided profile.
 
     Turn PoE ports on/off depending on the settings in the Profile.
     """
+    try:
+        profile_data = Profile("poectrl.json")
+        devices = profile_data.get_devices()
+        this_profile = profile_data.get_specific_profile(chosen_profile)
+    except MissingConfigurationError:
+        print("[red]-> Cannot find a configuration file. Aborting")
+        raise typer.Exit(1)
+    except BadConfigurationError:
+        print("[red]-> Invalid configuration file. Aborting")
+        raise typer.Exit(2)
+    except UnknownProfileError:
+        print("[red]-> That profile does not exist. Aborting")
+        raise typer.Exit(3)
+
     if info:
         # this is just a temp placeholder, I'll write a prettier one later.
-        print(json.dumps(PROFILES["profiles"][profile], indent=4))
+        print(json.dumps(this_profile, indent=4))
     else:
-        activate_profile(profile)
+        activate_profile(this_profile, devices)
 
 
 if __name__ == "__main__":

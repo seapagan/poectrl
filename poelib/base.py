@@ -16,6 +16,7 @@ from paramiko.ssh_exception import (
     AuthenticationException,
     NoValidConnectionsError,
 )
+from rich import print
 
 from poelib.sshwrapper import Wrapper as SSH  # noqa N814
 
@@ -144,12 +145,13 @@ class PoECtrl:
             # line.
             self.connection.run("cfgmtd -w -p /etc/")
         except BadAuthenticationError:
-            print(" -> Cannot connect to this device [Bad user/pass].")
+            print("[red]-> Cannot connect to this device [Bad user/pass].")
         except CannotConnectError:
-            print(" -> Cannot physically connect to this device.")
+            print("[red]-> Cannot physically connect to this device.")
         except (CannotReadSettingsError, CannotWriteSettingsError):
             print(
-                " -> Failure to Read or Write the Settings for device {self.ip}"
+                "[red]-> Failure to Read or Write the Settings for device"
+                f" {self.ip}"
             )
         finally:
             self.close()
