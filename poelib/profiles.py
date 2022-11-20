@@ -4,7 +4,11 @@ from pathlib import Path
 
 from rich import print
 
-from .errors import BadConfigurationError, MissingConfigurationError
+from .errors import (
+    BadConfigurationError,
+    MissingConfigurationError,
+    UnknownProfileError,
+)
 
 
 class Profile:
@@ -44,3 +48,10 @@ class Profile:
     def get_profiles(self):
         """Return a dictionary with only the defined profiles."""
         return self.config["profiles"]
+
+    def get_specific_profile(self, profile_name):
+        """Return the details for a specific profile."""
+        try:
+            return self.config["profiles"][profile_name]
+        except KeyError:
+            raise UnknownProfileError

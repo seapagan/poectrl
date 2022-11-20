@@ -23,3 +23,7 @@ class MissingConfigurationError(Exception):
 
 class BadConfigurationError(Exception):
     """Raised if the configuration file cannot be decoded."""
+
+
+class UnknownProfileError(Exception):
+    """Raised if the specified profile does not exist."""

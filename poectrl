@@ -1,12 +1,16 @@
 #! /bin/env python
-"""Control PoE on supported routers."""
+"""CLI program to Control PoE on supported routers."""
 import json
 
 import typer
 from rich import print
 
 from poelib import PoECtrl
-from poelib.errors import BadConfigurationError, MissingConfigurationError
+from poelib.errors import (
+    BadConfigurationError,
+    MissingConfigurationError,
+    UnknownProfileError,
+)
 from poelib.profiles import Profile
 
 
@@ -28,28 +32,22 @@ def main(chosen_profile: str, info: bool = False):
     """
     try:
         profile_data = Profile("poectrl.json")
-        profiles = profile_data.get_profiles()
         devices = profile_data.get_devices()
+        this_profile = profile_data.get_specific_profile(chosen_profile)
     except MissingConfigurationError:
         print("[red]-> Cannot find a configuration file. Aborting")
         raise typer.Exit(1)
     except BadConfigurationError:
         print("[red]-> Invalid configuration file. Aborting")
         raise typer.Exit(2)
+    except UnknownProfileError:
+        print("[red]-> That profile does not exist. Aborting")
+        raise typer.Exit(3)
 
     if info:
         # this is just a temp placeholder, I'll write a prettier one later.
-        print(json.dumps(profiles[chosen_profile], indent=4))
+        print(json.dumps(this_profile, indent=4))
     else:
-        try:
-            this_profile = profiles[chosen_profile]
-        except KeyError:
-            print(
-                f"[red]-> The profile '[bold]{chosen_profile}[/bold]' does not "
-                "exist, aborting!"
-            )
-            raise typer.Exit(3)
-
         activate_profile(this_profile, devices)
 
 
