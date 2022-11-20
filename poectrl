@@ -1,61 +1,24 @@
 #! /bin/env python
 """Control PoE on supported routers."""
 import json
-from pathlib import Path
 
 import typer
 from rich import print
 
 from poelib import PoECtrl
+from poelib.errors import BadConfigurationError, MissingConfigurationError
+from poelib.profiles import Profile
 
 
-def get_profile():
-    """Read the profile data from a JSON file.
-
-    Priority:
-        poectrl.json in the WORKING directory.
-        poectrl.json in the USER'S HOME directory.
-
-    If both these are missing, raise an error.
-    """
-    config_filename = Path("poectrl.json")
-    local_config_file = Path.cwd() / config_filename
-    home_config_file = Path.home() / config_filename
-
-    if local_config_file.exists():
-        filename = local_config_file
-    elif home_config_file.exists():
-        filename = home_config_file
-    else:
-        print(" [red]The configuration file cannot be found, aborting.")
-        raise typer.Exit(2)
-
-    try:
-        print(f"[green]Using configuration from {filename}")
-        with open(filename) as f:
-            return json.load(f)
-    except json.JSONDecodeError:
-        print("[red]-> Error parsing the configuration file, aborting.")
-        raise typer.Exit(3)
-
-
-def activate_profile(profiles: dict, chosen_profile: str):
+def activate_profile(profile: dict, devices: dict):
     """Activate the specified profile."""
-    if chosen_profile not in list(profiles["profiles"]):
-        print(
-            f"[red]-> The profile '[bold]{chosen_profile}[/bold]' does not "
-            "exist, aborting!"
-        )
-        raise typer.Exit(1)
-    else:
-        this_profile = dict(profiles["profiles"][chosen_profile])
-        for device in this_profile:
-            try:
-                auth = profiles["devices"][device]
-                poe = PoECtrl(device, auth["user"], auth["password"])
-                poe.process_device(this_profile[device])
-            except KeyError as err:
-                print(f"[red]-> Device {err} has not been defined, skipping.")
+    for device in profile:
+        try:
+            auth = devices[device]
+            poe = PoECtrl(device, auth["user"], auth["password"])
+            poe.process_device(profile[device])
+        except KeyError as err:
+            print(f"[red]-> Device {err} has not been defined, skipping.")
 
 
 def main(chosen_profile: str, info: bool = False):
@@ -63,12 +26,31 @@ def main(chosen_profile: str, info: bool = False):
 
     Turn PoE ports on/off depending on the settings in the Profile.
     """
-    profiles = get_profile()
+    try:
+        profile_data = Profile("poectrl.json")
+        profiles = profile_data.get_profiles()
+        devices = profile_data.get_devices()
+    except MissingConfigurationError:
+        print("[red]-> Cannot find a configuration file. Aborting")
+        raise typer.Exit(1)
+    except BadConfigurationError:
+        print("[red]-> Invalid configuration file. Aborting")
+        raise typer.Exit(2)
+
     if info:
         # this is just a temp placeholder, I'll write a prettier one later.
-        print(json.dumps(profiles["profiles"][chosen_profile], indent=4))
+        print(json.dumps(profiles[chosen_profile], indent=4))
     else:
-        activate_profile(profiles, chosen_profile)
+        try:
+            this_profile = profiles[chosen_profile]
+        except KeyError:
+            print(
+                f"[red]-> The profile '[bold]{chosen_profile}[/bold]' does not "
+                "exist, aborting!"
+            )
+            raise typer.Exit(3)
+
+        activate_profile(this_profile, devices)
 
 
 if __name__ == "__main__":
