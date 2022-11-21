@@ -4,10 +4,10 @@
 status of individual ports on multiple Ubiquiti TS-8-Pro Switch, using
 predefined profiles.
 
-This has currently only been tested on the TS-8-PRO Toughswitch routers,
+This has currently only been tested on the TS-8-PRO ToughSwitch routers,
 though others will be added soon.
 
-**IMPORTANT: This library DOES NOT(and CAN NOT) ensure that any device attached
+**IMPORTANT: This library DOES NOT (and CAN NOT) ensure that any device attached
 to a port is compatible with the voltage selected. BE VERY CAREFUL that you
 choose the correct voltage for your devices or you can DAMAGE THEM. No
 responsibility is taken for equipment damaged using this library.**
@@ -73,7 +73,18 @@ Conncting to 192.168.0.190:
   Setting port 7 to 0V
 ```
 
-Listing a profile :
+List all defined profiles:
+
+```console
+$ ./poectrl list
+Using configuration from /home/seapagan/data/work/own/ts-8-pro-control/poectrl.json
+
+Valid profiles are :
+ - cctv_on
+ - cctv_off
+```
+
+Show settings for a profile :
 
 ```console
 $ ./poectrl show cctv_off
@@ -100,8 +111,8 @@ Current proposed project plan.
 - [X] Write proof-of-concept code to control ports.
 - [X] Refactor and tidy the above code into a Library Class.
 - [X] Create a basic CLI using this Library
-- [ ] Continue the CLI to use a config config file, show current values, list
-  profiles etc.
+- [X] Continue the CLI to use a config file, show current values, list profiles
+  etc.
 - [ ] Possibly publish the standalone version above on PyPi.
 - [ ] Develop this into a full API (using FastAPI).
 - [ ] Modify the command line app to interface with the above API.
