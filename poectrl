@@ -13,6 +13,8 @@ from poelib.errors import (
 )
 from poelib.profiles import Profile
 
+app = typer.Typer(add_completion=False)
+
 
 def activate_profile(profile: dict, devices: dict):
     """Activate the specified profile."""
@@ -25,15 +27,12 @@ def activate_profile(profile: dict, devices: dict):
             print(f"[red]-> Device {err} has not been defined, skipping.")
 
 
-def main(chosen_profile: str, info: bool = False):
-    """Run the provided profile.
-
-    Turn PoE ports on/off depending on the settings in the Profile.
-    """
+def get_profile(profile: str) -> tuple:
+    """Parse the profile and return (devices,this_profile)."""
     try:
         profile_data = Profile("poectrl.json")
         devices = profile_data.get_devices()
-        this_profile = profile_data.get_specific_profile(chosen_profile)
+        this_profile = profile_data.get_specific_profile(profile)
     except MissingConfigurationError:
         print("[red]-> Cannot find a configuration file. Aborting")
         raise typer.Exit(1)
@@ -43,13 +42,32 @@ def main(chosen_profile: str, info: bool = False):
     except UnknownProfileError:
         print("[red]-> That profile does not exist. Aborting")
         raise typer.Exit(3)
+    return devices, this_profile
 
-    if info:
-        # this is just a temp placeholder, I'll write a prettier one later.
-        print(json.dumps(this_profile, indent=4))
-    else:
-        activate_profile(this_profile, devices)
+
+@app.command()
+def list():
+    """List all the available profiles."""
+    print("PLACEHOLDER: Listing profiles.")
+
+
+@app.command()
+def show(profile):
+    """Show details of a specific profile."""
+    _, this_profile = get_profile(profile)
+    # this is just a temp placeholder, I'll write a prettier one later.
+    print(json.dumps(this_profile, indent=4))
+
+
+@app.command()
+def apply(profile_name: str, info: bool = False):
+    """Apply the specified profile.
+
+    Turn PoE ports on/off depending on the settings in the Profile.
+    """
+    devices, this_profile = get_profile(profile_name)
+    activate_profile(this_profile, devices)
 
 
 if __name__ == "__main__":
-    typer.run(main)
+    app()
