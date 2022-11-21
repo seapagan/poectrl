@@ -7,6 +7,7 @@ from rich import print
 from .errors import (
     BadConfigurationError,
     MissingConfigurationError,
+    NoDevicesError,
     UnknownProfileError,
 )
 
@@ -43,7 +44,10 @@ class Profile:
 
     def get_devices(self):
         """Return a dictionary with only the defined devices."""
-        return self.config["devices"]
+        try:
+            return self.config["devices"]
+        except KeyError:
+            raise NoDevicesError
 
     def get_profiles(self):
         """Return a dictionary with only the defined profiles."""

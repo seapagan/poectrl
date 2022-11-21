@@ -9,6 +9,7 @@ from poelib import PoECtrl
 from poelib.errors import (
     BadConfigurationError,
     MissingConfigurationError,
+    NoDevicesError,
     UnknownProfileError,
 )
 from poelib.profiles import Profile
@@ -41,6 +42,9 @@ def get_profile(profile: str) -> tuple:
         raise typer.Exit(2)
     except UnknownProfileError:
         print("[red]-> That profile does not exist. Aborting")
+        raise typer.Exit(3)
+    except NoDevicesError:
+        print("[red]-> No devices are defined. Aborting")
         raise typer.Exit(3)
     return devices, this_profile
 
