@@ -1,76 +1,30 @@
 #! /bin/env python
 """CLI program to Control PoE on supported routers."""
-import json
 
 import typer
-from rich import print
 
-from poelib import PoECtrl
-from poelib.errors import (
-    BadConfigurationError,
-    MissingConfigurationError,
-    NoDevicesError,
-    UnknownProfileError,
-)
-from poelib.profiles import Profile
+from poelib.cliapp import CLIApp
 
-app = typer.Typer(add_completion=False)
+app = typer.Typer(add_completion=False, no_args_is_help=True)
+cliapp = CLIApp()
 
 
-def activate_profile(profile: dict, devices: dict):
-    """Activate the specified profile."""
-    for device in profile:
-        try:
-            auth = devices[device]
-            poe = PoECtrl(device, auth["user"], auth["password"])
-            poe.process_device(profile[device])
-        except KeyError as err:
-            print(f"[red]-> Device {err} has not been defined, skipping.")
+@app.command()
+def apply(profile_name: str):
+    """Call the apply function on the specified profile."""
+    cliapp.apply(profile_name)
 
 
-def get_profile(profile: str) -> tuple:
-    """Parse the profile and return (devices,this_profile)."""
-    try:
-        profile_data = Profile("poectrl.json")
-        devices = profile_data.get_devices()
-        this_profile = profile_data.get_specific_profile(profile)
-    except MissingConfigurationError:
-        print("[red]-> Cannot find a configuration file. Aborting")
-        raise typer.Exit(1)
-    except BadConfigurationError:
-        print("[red]-> Invalid configuration file. Aborting")
-        raise typer.Exit(2)
-    except UnknownProfileError:
-        print("[red]-> That profile does not exist. Aborting")
-        raise typer.Exit(3)
-    except NoDevicesError:
-        print("[red]-> No devices are defined. Aborting")
-        raise typer.Exit(3)
-    return devices, this_profile
+@app.command()
+def show(profile_name: str):
+    """Show information for the specified profile."""
+    cliapp.show(profile_name)
 
 
 @app.command()
 def list():
-    """List all the available profiles."""
-    print("PLACEHOLDER: Listing profiles.")
-
-
-@app.command()
-def show(profile):
-    """Show details of a specific profile."""
-    _, this_profile = get_profile(profile)
-    # this is just a temp placeholder, I'll write a prettier one later.
-    print(json.dumps(this_profile, indent=4))
-
-
-@app.command()
-def apply(profile_name: str, info: bool = False):
-    """Apply the specified profile.
-
-    Turn PoE ports on/off depending on the settings in the Profile.
-    """
-    devices, this_profile = get_profile(profile_name)
-    activate_profile(this_profile, devices)
+    """List all profiles."""
+    cliapp.list()
 
 
 if __name__ == "__main__":
