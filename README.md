@@ -58,10 +58,10 @@ simple file that describes all devices and profiles. There is an example in
 
 ## Usage
 
-Run the `poectrl` file, giving the profile name as an argument.
+Apply a predefined profile, setting the PoE port voltages.
 
 ```console
-$ ./poectrl cctv_off
+$ ./poectrl apply cctv_off
 Using configuration from /home/seapagan/data/work/own/ts-8-pro-control/poectrl.json
 Conncting to 192.168.0.187:
   Setting port 4 to 0V
@@ -76,7 +76,7 @@ Conncting to 192.168.0.190:
 Listing a profile :
 
 ```console
-$ ./poectrl cctv_off --info
+$ ./poectrl show cctv_off
 Using configuration from /home/seapagan/data/work/own/ts-8-pro-control/poectrl.json
 {
     "192.168.0.187": {
