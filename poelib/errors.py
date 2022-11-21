@@ -27,3 +27,11 @@ class BadConfigurationError(Exception):
 
 class UnknownProfileError(Exception):
     """Raised if the specified profile does not exist."""
+
+
+class NoDevicesError(Exception):
+    """Raised if no devices are defined."""
+
+
+class NoProfilesError(Exception):
+    """Raised if no profiles are defined."""
