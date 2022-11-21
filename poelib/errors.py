@@ -31,3 +31,7 @@ class UnknownProfileError(Exception):
 
 class NoDevicesError(Exception):
     """Raised if no devices are defined."""
+
+
+class NoProfilesError(Exception):
+    """Raised if no profiles are defined."""
