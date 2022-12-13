@@ -3,14 +3,14 @@ import json
 
 from rich import print
 
-from poelib import PoECtrl
-from poelib.errors import (
+from .base import PoECtrl
+from .errors import (
     BadConfigurationError,
     MissingConfigurationError,
     NoDevicesError,
     UnknownProfileError,
 )
-from poelib.profiles import Profile
+from .profiles import Profile
 
 
 class CLIApp:
