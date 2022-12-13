@@ -14,6 +14,7 @@ responsibility is taken for equipment damaged using this library.**
 
 - [Status](#status)
 - [Use Cases](#use-cases)
+- [Installation](#installation)
 - [Configuration](#configuration)
 - [Usage](#usage)
 - [Development Plans](#development-plans)
@@ -29,6 +30,15 @@ the source code if you are interested 😃
 
 - Control a set of PoE-powered IP cameras, switches and access points to allow
 disabling when not needed or quick enabling if required.
+
+## Installation
+
+The latest version is uploaded to [pypi.org](https://pypi.org) so you can
+install this the same as any other package:
+
+```console
+pip install poectrl
+```
 
 ## Configuration
 
@@ -61,7 +71,7 @@ simple file that describes all devices and profiles. There is an example in
 Apply a predefined profile, setting the PoE port voltages.
 
 ```console
-$ ./poectrl apply cctv_off
+$ poectrl apply cctv_off
 Using configuration from /home/seapagan/data/work/own/ts-8-pro-control/poectrl.json
 Conncting to 192.168.0.187:
   Setting port 4 to 0V
@@ -76,7 +86,7 @@ Conncting to 192.168.0.190:
 List all defined profiles:
 
 ```console
-$ ./poectrl list
+$ poectrl list
 Using configuration from /home/seapagan/data/work/own/ts-8-pro-control/poectrl.json
 
 Valid profiles are :
@@ -87,7 +97,7 @@ Valid profiles are :
 Show settings for a profile :
 
 ```console
-$ ./poectrl show cctv_off
+$ poectrl show cctv_off
 Using configuration from /home/seapagan/data/work/own/ts-8-pro-control/poectrl.json
 {
     "192.168.0.187": {
