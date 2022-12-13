@@ -2,6 +2,7 @@
 import json
 
 from rich import print
+from rich.panel import Panel
 
 from .base import PoECtrl
 from .errors import (
@@ -24,7 +25,14 @@ class CLIApp:
             self.profiles = self.config.get_profiles()
             self.devices = self.config.get_devices()
         except NoDevicesError:
-            print("[red]-> No devices are defined. Aborting")
+            print(
+                Panel(
+                    "[white]-> No devices are defined. Aborting",
+                    title="Error",
+                    title_align="left",
+                    style="red",
+                )
+            )
             exit(3)
 
         self.current_profile = {}
@@ -34,10 +42,24 @@ class CLIApp:
         try:
             return Profile("poectrl.json")
         except MissingConfigurationError:
-            print("[red]-> Cannot find a configuration file. Aborting")
+            print(
+                Panel(
+                    "[white]-> Cannot find a configuration file. Aborting",
+                    title="Error",
+                    title_align="left",
+                    style="red",
+                )
+            )
             exit(1)
         except BadConfigurationError:
-            print("[red]-> Invalid configuration file. Aborting")
+            print(
+                Panel(
+                    "[white]-> Invalid configuration file. Aborting",
+                    title="Error",
+                    title_align="left",
+                    style="red",
+                )
+            )
             exit(2)
 
     def get_profile(self, profile: str) -> dict:
@@ -45,7 +67,14 @@ class CLIApp:
         try:
             this_profile = self.config.get_specific_profile(profile)
         except UnknownProfileError:
-            print("[red]-> That profile does not exist. Aborting")
+            print(
+                Panel(
+                    "[white]-> That profile does not exist. Aborting",
+                    title="Error",
+                    title_align="left",
+                    style="red",
+                )
+            )
             quit(3)
 
         return this_profile
@@ -58,7 +87,15 @@ class CLIApp:
                 poe = PoECtrl(device, auth["user"], auth["password"])
                 poe.process_device(profile[device])
             except KeyError as err:
-                print(f"[red]-> Device {err} has not been defined, skipping.")
+                print(
+                    Panel(
+                        f"[white]-> Device {err} has not been defined, skipping.",
+                        title="Error",
+                        title_align="left",
+                        style="red",
+                        expand=False,
+                    )
+                )
 
     def list(self):
         """List all the available profiles."""
