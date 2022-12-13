@@ -3,7 +3,7 @@
 
 import typer
 
-from poelib.cliapp import CLIApp
+from .cliapp import CLIApp
 
 app = typer.Typer(add_completion=False, no_args_is_help=True)
 cliapp = CLIApp()

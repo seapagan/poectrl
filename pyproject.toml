@@ -1,16 +1,18 @@
 [tool.poetry]
-name = "ts-8-pro-control"
+name = "poectrl"
 version = "0.1.0"
-description = "Control PoE status on a Ubiquiti TS-8-Pro Switch"
-authors = ["Grant Ramsay <seapagan@gmail.com>"]
+description = "Control PoE status on select Ubiquiti switches"
 license = "MIT"
+authors = ["Grant Ramsay <seapagan@gmail.com>"]
 readme = "README.md"
-packages = [{ include = "ts_8_pro_control" }]
+
+[tool.poetry.scripts]
+poectrl = "poectrl.main:app"
 
 [tool.poetry.dependencies]
 python = ">=3.7.2,<4.0"
 paramiko = "^2.12.0"
-typer = {extras = ["all"], version = "^0.7.0"}
+typer = { extras = ["all"], version = "^0.7.0" }
 
 
 [tool.poetry.group.dev.dependencies]
@@ -20,6 +22,7 @@ flake8-docstrings = "^1.6.0"
 pydocstyle = "^6.1.1"
 pep8-naming = "^0.13.2"
 pylint = "^2.15.5"
+
 
 [build-system]
 requires = ["poetry-core"]

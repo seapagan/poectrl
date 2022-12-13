@@ -18,14 +18,13 @@ from paramiko.ssh_exception import (
 )
 from rich import print
 
-from poelib.sshwrapper import Wrapper as SSH  # noqa N814
-
 from .errors import (
     BadAuthenticationError,
     CannotConnectError,
     CannotReadSettingsError,
     CannotWriteSettingsError,
 )
+from .sshwrapper import Wrapper as SSH  # noqa N814
 
 
 class PoECtrl:
