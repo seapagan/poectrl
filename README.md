@@ -108,12 +108,12 @@ Using configuration from /home/seapagan/data/work/own/ts-8-pro-control/poectrl.j
 
 Current proposed project plan.
 
-- [X] Write proof-of-concept code to control ports.
-- [X] Refactor and tidy the above code into a Library Class.
-- [X] Create a basic CLI using this Library
-- [X] Continue the CLI to use a config file, show current values, list profiles
+- [x] Write proof-of-concept code to control ports.
+- [x] Refactor and tidy the above code into a Library Class.
+- [x] Create a basic CLI using this Library
+- [x] Continue the CLI to use a config file, show current values, list profiles
   etc.
-- [ ] Possibly publish the standalone version above on PyPi.
+- [x] Publish on PyPi as a standalone package.
 - [ ] Develop this into a full API (using FastAPI).
 - [ ] Modify the command line app to interface with the above API.
 - [ ] Create a Web App to interface with the above API.

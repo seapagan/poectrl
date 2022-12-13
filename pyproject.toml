@@ -5,6 +5,26 @@ description = "Control PoE status on select Ubiquiti switches"
 license = "MIT"
 authors = ["Grant Ramsay <seapagan@gmail.com>"]
 readme = "README.md"
+repository = "https://github.com/seapagan/ts-8-pro-control"
+homepage = "https://github.com/seapagan/ts-8-pro-control"
+classifiers = [
+  "Development Status :: 4 - Beta",
+  "Environment :: Console",
+  "Intended Audience :: Developers",
+  "Intended Audience :: End Users/Desktop",
+  "Intended Audience :: System Administrators",
+  "Operating System :: OS Independent",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3.7",
+  "Programming Language :: Python :: 3.8",
+  "Programming Language :: Python :: 3.9",
+  "Programming Language :: Python :: 3.10",
+]
+
+[tool.poetry.urls]
+"Pull Requests" = "https://github.com/seapagan/openapi-readme/pulls"
+"Bug Tracker" = "https://github.com/seapagan/openapi-readme/issues"
+
 
 [tool.poetry.scripts]
 poectrl = "poectrl.main:app"
