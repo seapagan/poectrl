@@ -1,5 +1,7 @@
 # Control PoE status on a Ubiquiti TS-8-Pro Switch <!-- omit in toc -->
 
+[![PyPI version](https://badge.fury.io/py/poectrl.svg)](https://badge.fury.io/py/poectrl)
+
 **Development work** for a system to remotely and automatically control the PoE
 status of individual ports on multiple Ubiquiti TS-8-Pro Switch, using
 predefined profiles.
@@ -41,6 +43,11 @@ pip install poectrl
 ```
 
 ## Configuration
+
+**IMPORTANT : The configuration layout has CHANGED from version 1.2.0. If you
+are using config files from previous versions you will need to update the
+"devices" section to fit the below schema and change the profile to point to the
+name instead of IP address.**
 
 The program is configured using a `poectrl.json` file either in the current
 working directory (first priority) or the user's home directory. This is a

@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "poectrl"
-version = "0.1.2"
+version = "0.2.0"
 description = "Control PoE status on select Ubiquiti switches"
 license = "MIT"
 authors = ["Grant Ramsay <seapagan@gmail.com>"]
