@@ -1,5 +1,7 @@
 # Control PoE status on a Ubiquiti TS-8-Pro Switch <!-- omit in toc -->
 
+[![PyPI version](https://badge.fury.io/py/poectrl.svg)](https://badge.fury.io/py/poectrl)
+
 **Development work** for a system to remotely and automatically control the PoE
 status of individual ports on multiple Ubiquiti TS-8-Pro Switch, using
 predefined profiles.
@@ -42,6 +44,11 @@ pip install poectrl
 
 ## Configuration
 
+**IMPORTANT : The configuration layout has CHANGED from version 1.2.0. If you
+are using config files from previous versions you will need to update the
+"devices" section to fit the below schema and change the profile to point to the
+name instead of IP address.**
+
 The program is configured using a `poectrl.json` file either in the current
 working directory (first priority) or the user's home directory. This is a
 simple file that describes all devices and profiles. There is an example in
@@ -50,20 +57,21 @@ simple file that describes all devices and profiles. There is an example in
 ```json
 {
   "devices": {
-    "192.168.0.187": {"user": "ubnt", "password": "ubnt"},
-    "192.168.0.190": {"user": "ubnt", "password": "ubnt"}
+    "switch_1": {"ip": "192.168.0.187", "user": "ubnt", "password": "ubnt"},
+    "switch_2": {"ip": "192.168.0.190", "user": "ubnt", "password": "ubnt"}
   },
   "profiles": {
     "cctv_on": {
-      "192.168.0.187": {"4": 24,"5": 24,"8": 48},
-      "192.168.0.190": {"5": 24,"6": 24,"7": 48}
+      "switch_1": {"4": 24, "5": 24, "8": 48},
+      "switch_2": {"5": 24, "6": 24, "7": 48}
     },
     "cctv_off": {
-      "192.168.0.187": {"4": 0,"5": 0,"8": 0},
-      "192.168.0.190": {"5": 0,"6": 0,"7": 0}
+      "switch_1": {"4": 0, "5": 0, "8": 0},
+      "switch_2": {"5": 0, "6": 0, "7": 0}
     }
   }
 }
+
 ```
 
 ## Usage
@@ -72,15 +80,16 @@ Apply a predefined profile, setting the PoE port voltages.
 
 ```console
 $ poectrl apply cctv_off
-Using configuration from /home/seapagan/data/work/own/ts-8-pro-control/poectrl.json
-Conncting to 192.168.0.187:
+Using configuration from /home/seapagan/data/work/own/poectrl/poectrl.json
+Conncting to switch_1 (192.168.0.187):
   Setting port 4 to 0V
   Setting port 5 to 0V
   Setting port 8 to 0V
-Conncting to 192.168.0.190:
+Conncting to switch_2 (192.168.0.190):
   Setting port 5 to 0V
   Setting port 6 to 0V
   Setting port 7 to 0V
+
 ```
 
 List all defined profiles:
@@ -100,17 +109,18 @@ Show settings for a profile :
 $ poectrl show cctv_off
 Using configuration from /home/seapagan/data/work/own/ts-8-pro-control/poectrl.json
 {
-    "192.168.0.187": {
+    "switch_1": {
         "4": 0,
         "5": 0,
         "8": 0
     },
-    "192.168.0.190": {
+    "switch_2": {
         "5": 0,
         "6": 0,
         "7": 0
     }
 }
+
 
 ```
 
