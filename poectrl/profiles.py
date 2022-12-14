@@ -17,7 +17,7 @@ class Profile:
     """Read profiles and devices from a configuration file."""
 
     def __init__(self, filename):
-        """Initialize the class."""
+        """Load and validate profiles."""
         self.filename = filename
         self.local_config_file = Path.cwd() / Path(filename)
         self.home_config_file = Path.home() / Path(filename)
