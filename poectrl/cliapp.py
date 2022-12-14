@@ -83,8 +83,13 @@ class CLIApp:
         """Activate the specified profile."""
         for device in profile:
             try:
-                auth = self.devices[device]
-                poe = PoECtrl(device, auth["user"], auth["password"])
+                device_info = self.devices[device]
+                poe = PoECtrl(
+                    device,
+                    device_info["ip"],
+                    device_info["user"],
+                    device_info["password"],
+                )
                 poe.process_device(profile[device])
             except KeyError as err:
                 print(

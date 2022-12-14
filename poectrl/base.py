@@ -30,8 +30,11 @@ from .sshwrapper import Wrapper as SSH  # noqa N814
 class PoECtrl:
     """Class to control PoE on Ubiquiti Routers."""
 
-    def __init__(self, ip: str, username: str, password: str, port: int = 22):
+    def __init__(
+        self, name: str, ip: str, username: str, password: str, port: int = 22
+    ):
         """Initialize the class."""
+        self.name = name
         self.ip = ip
         self.username = username
         self.password = password
@@ -126,7 +129,7 @@ class PoECtrl:
 
     def process_device(self, port_config: dict):
         """Set the ports for a specific device."""
-        print(f"Conncting to {self.ip}:")
+        print(f"Conncting to {self.name} ({self.ip}):")
 
         try:
             self.connect()
