@@ -3,6 +3,7 @@ import json
 from pathlib import Path
 
 from rich import print
+from rich.panel import Panel
 
 from .errors import (
     BadConfigurationError,
@@ -40,7 +41,15 @@ class Profile:
     def read_config(self):
         """Return the configuration file as a dictionary."""
         try:
-            print(f"[green]Using configuration from {self.absolute_filename}")
+            print(
+                Panel(
+                    f"[white]Using configuration from {self.absolute_filename}",
+                    title="Info",
+                    title_align="left",
+                    expand=False,
+                    style="green",
+                )
+            )
             with open(self.absolute_filename) as f:
                 return json.load(f)
         except json.JSONDecodeError:
