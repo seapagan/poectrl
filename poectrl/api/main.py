@@ -1,7 +1,7 @@
 """Main control file for the API."""
 from fastapi import FastAPI
 
-from poectrl.api.routes import control, home
+from poectrl.api.resources import control, home
 
 app = FastAPI()
 
