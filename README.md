@@ -146,20 +146,20 @@ INFO:     Uvicorn running on http://127.0.0.1:8000 (Press CTRL+C to quit)
 
 There are a couple of command-line switches you can use :
 
-`---refresh` - This is useful for modifiying the code, the API will reload after
-each source code change.
+`---refresh` - This is useful if you are modifiying or troubleshooting the code,
+the API will reload after each source code change.
 
 `--port <int>` - Change the port that the API listens on (default is 8000)
 
 After this, you can access the API on `http://localhost:8000`. Swagger docs are
-availiable at `http://localhost:8000/docs`
+available at `http://localhost:8000/docs`
 
 #### API Routes
 
 There are currently 3 routes which correspond to the same command in the CLI.
 
-`/list/` - Lists all the defined profiles
-`/show/{profile_name}` - Shows details for the specific profile
+`/list/` - Lists all the defined profiles\
+`/show/{profile_name}` - Shows details for the specific profile\
 `/apply/{profile_name}` - Apply the specific profile
 
 ## Development Plans
