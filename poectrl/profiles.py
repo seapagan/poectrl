@@ -1,4 +1,5 @@
 """Control the use of Profile files for the PoECtrl library."""
+import inspect
 import json
 from pathlib import Path
 
@@ -41,15 +42,19 @@ class Profile:
     def read_config(self):
         """Return the configuration file as a dictionary."""
         try:
-            print(
-                Panel(
-                    f"[white]Using configuration from {self.absolute_filename}",
-                    title="Info",
-                    title_align="left",
-                    expand=False,
-                    style="green",
+            # the below conditional stops the config filename being printed
+            # multiple times when starting the API server.
+            if inspect.stack()[-1].filename.endswith("poectrl"):
+                print(
+                    Panel(
+                        "[white]Using configuration from "
+                        f"[green]{self.absolute_filename}",
+                        title="Info",
+                        title_align="left",
+                        expand=False,
+                        style="green",
+                    )
                 )
-            )
             with open(self.absolute_filename) as f:
                 return json.load(f)
         except json.JSONDecodeError:
