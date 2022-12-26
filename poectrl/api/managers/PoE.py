@@ -28,7 +28,7 @@ class PoEManager:
             )
         return {profile: this_profile}
 
-    def apply(self, profile: str):
+    async def apply(self, profile: str):
         """Apply the chosen profile."""
         try:
             this_profile = self.profiles[profile]
@@ -41,7 +41,6 @@ class PoEManager:
         for device_name, device_profile in this_profile.items():
             try:
                 device_info = self.devices[device_name]
-                print(device_name, ": ", device_profile, device_info)
                 poe = PoECtrl(
                     device_name,
                     device_info["ip"],
@@ -57,4 +56,4 @@ class PoEManager:
                     detail=f"Device {device_name} is not configured",
                 )
 
-        return {"detail": "Profile Applied"}
+        return {"detail": f"Profile '{profile}' Applied"}

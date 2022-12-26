@@ -25,6 +25,6 @@ def show(profile: str):
 
 
 @router.get("/apply/{profile}")
-def apply(profile: str):
+async def apply(profile: str):
     """Apply the specified profile."""
-    return poe_ctrl.apply(profile)
+    return await poe_ctrl.apply(profile)
