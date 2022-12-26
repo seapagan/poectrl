@@ -19,6 +19,9 @@ responsibility is taken for equipment damaged using this library.**
 - [Installation](#installation)
 - [Configuration](#configuration)
 - [Usage](#usage)
+  - [As a command-line program](#as-a-command-line-program)
+  - [As an API](#as-an-api)
+    - [API Routes](#api-routes)
 - [Development Plans](#development-plans)
 - [Contributing](#contributing)
 
@@ -76,6 +79,8 @@ simple file that describes all devices and profiles. There is an example in
 
 ## Usage
 
+### As a command-line program
+
 Apply a predefined profile, setting the PoE port voltages.
 
 ```console
@@ -120,9 +125,42 @@ Using configuration from /home/seapagan/data/work/own/ts-8-pro-control/poectrl.j
         "7": 0
     }
 }
-
-
 ```
+
+### As an API
+
+It is also possible to run this locally as an API, which can then allow easier
+control using a web browser.
+
+**Important**: This is only designed for local network use, not over the
+internet since there is NO access control set up. If you open this to the
+internet then ANYONE can control your PoE!
+
+```console
+$ poectrl serve
+INFO:     Started server process [49922]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+INFO:     Uvicorn running on http://127.0.0.1:8000 (Press CTRL+C to quit)
+```
+
+There are a couple of command-line switches you can use :
+
+`---refresh` - This is useful for modifiying the code, the API will reload after
+each source code change.
+
+`--port <int>` - Change the port that the API listens on (default is 8000)
+
+After this, you can access the API on `http://localhost:8000`. Swagger docs are
+availiable at `http://localhost:8000/docs`
+
+#### API Routes
+
+There are currently 3 routes which correspond to the same command in the CLI.
+
+`/list/` - Lists all the defined profiles
+`/show/{profile_name}` - Shows details for the specific profile
+`/apply/{profile_name}` - Apply the specific profile
 
 ## Development Plans
 
@@ -134,8 +172,7 @@ Current proposed project plan.
 - [x] Continue the CLI to use a config file, show current values, list profiles
   etc.
 - [x] Publish on PyPi as a standalone package.
-- [ ] Develop this into a full API (using FastAPI).
-- [ ] Modify the command line app to interface with the above API.
+- [x] Wrap this into an API (using FastAPI) for local use only.
 - [ ] Create a Web App to interface with the above API.
 
 ## Contributing
