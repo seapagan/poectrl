@@ -5,7 +5,7 @@ These will largely be the same as the respective CLI commands.
 from fastapi import APIRouter
 
 from poectrl.api.managers.PoE import PoEManager
-from poectrl.api.schemas.response.poe import ListResponse
+from poectrl.api.schemas.response.poe import ApplyResponse, ListResponse
 
 router = APIRouter(tags=["PoE Control"])
 
@@ -24,7 +24,7 @@ def show(profile: str):
     return poe_ctrl.show(profile)
 
 
-@router.get("/apply/{profile}")
+@router.get("/apply/{profile}", response_model=ApplyResponse)
 async def apply(profile: str):
     """Apply the specified profile."""
     return await poe_ctrl.apply(profile)
