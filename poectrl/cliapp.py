@@ -1,5 +1,6 @@
 """Class to control all the CLI commands."""
 import json
+import subprocess
 
 from rich import print
 from rich.panel import Panel
@@ -121,3 +122,10 @@ class CLIApp:
         """
         this_profile = self.get_profile(profile_name)
         self.activate_profile(this_profile)
+
+    def serve(self, reload: bool, port: int):
+        """Run the API server using 'gunicorn'."""
+        cmd_line = f"uvicorn poectrl.api.main:app --port={port}"
+        if reload:
+            cmd_line += " --reload"
+        subprocess.call(cmd_line, shell=True)

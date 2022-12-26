@@ -12,6 +12,7 @@ is taken for equipment damaged using this library.
 
 Licensed under MIT (https://opensource.org/licenses/MIT)
 """
+from fastapi import HTTPException
 from paramiko.ssh_exception import (
     AuthenticationException,
     NoValidConnectionsError,
@@ -154,6 +155,40 @@ class PoECtrl:
             print(
                 "[red]-> Failure to Read or Write the Settings for device"
                 f" {self.ip}"
+            )
+        finally:
+            self.close()
+
+    def api_process_device(self, port_config: dict):
+        """Allow the API to set the ports for a specific device."""
+        try:
+            self.connect()
+            for port in port_config:
+                _, stderr = self.connection.run(
+                    f"poe {port} {port_config[port]}"
+                )
+
+            new_cfg = self.update_system_cfg(self.system_cfg, port_config)
+            self.write_system_cfg(new_cfg)
+
+            # save the new settings on the device. The command below is what is
+            # actually run when using the alias 'save' from the device command
+            # line.
+            self.connection.run("cfgmtd -w -p /etc/")
+        except BadAuthenticationError:
+            raise HTTPException(
+                status_code=400,
+                detail="Cannot connect to this device [Bad user/pass]",
+            )
+        except CannotConnectError:
+            raise HTTPException(
+                status_code=400,
+                detail=f"Cannot physically connect to this device {self.ip}",
+            )
+        except (CannotReadSettingsError, CannotWriteSettingsError):
+            raise HTTPException(
+                status_code=400,
+                detail="Failure to Read or Write the Settings for device",
             )
         finally:
             self.close()
