@@ -38,7 +38,7 @@ fastapi = {extras = ["all"], version = ">=0.88,<0.96"}
 
 [tool.poetry.group.dev.dependencies]
 flake8 = "^5.0.4"
-black = "^22.10.0"
+black = ">=22.10,<24.0"
 flake8-docstrings = "^1.6.0"
 pydocstyle = "^6.1.1"
 pep8-naming = "^0.13.2"
