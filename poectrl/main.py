@@ -1,5 +1,11 @@
 #! /bin/env python
 """CLI program to Control PoE on supported routers."""
+try:
+    from importlib import metadata
+except ImportError:
+    import importlib_metadata as metadata
+
+from typing import Optional
 
 import typer
 
@@ -7,6 +13,23 @@ from .cliapp import CLIApp
 
 app = typer.Typer(add_completion=False, no_args_is_help=True)
 cliapp = CLIApp()
+
+
+@app.callback(invoke_without_command=True)
+def ver(
+    version: Optional[bool] = typer.Option(
+        None,
+        "-v",
+        "--version",
+        is_eager=True,
+        help="Show version number and exit.",
+    )
+):
+    """Control PoE on supported routers."""
+    if version:
+        ver = metadata.version("poectrl")
+        typer.echo(f"Version number : {ver}")
+        raise typer.Exit()
 
 
 @app.command()
