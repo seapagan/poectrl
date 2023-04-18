@@ -28,9 +28,9 @@ def list():
 
 
 @app.command()
-def serve(reload: bool = False, port: int = 8000):
+def serve(reload: bool = False, port: int = 8000, host: bool = False):
     """Run a server to provide API access."""
-    cliapp.serve(reload, port)
+    cliapp.serve(reload, port, host)
 
 
 if __name__ == "__main__":

@@ -151,6 +151,9 @@ the API will reload after each source code change.
 
 `--port <int>` - Change the port that the API listens on (default is 8000)
 
+`--host` - binds to all network interfaces on the host, allowing access from
+other machines using the public IP address of this machine
+
 After this, you can access the API on `http://localhost:8000`. Swagger docs are
 available at `http://localhost:8000/docs`
 
