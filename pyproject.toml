@@ -32,7 +32,7 @@ poectrl = "poectrl.main:app"
 [tool.poetry.dependencies]
 python = ">=3.7.2,<4.0"
 paramiko = ">=2.12,<4.0"
-typer = { extras = ["all"], version = "^0.7.0" }
+typer = { extras = ["all"], version = ">=0.7,<0.9" }
 fastapi = {extras = ["all"], version = ">=0.88,<0.96"}
 
 
